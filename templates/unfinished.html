@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load unfinished_tags %}
+{% load model_tags %}
+{% block non %}"active"{% endblock %}
+{% block heading %}在场车辆信息{% endblock %}
+{% block main %}
+    <!-- start: PAGE CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- start: CONTEXTUAL CLASSES -->
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h4 class="panel-title">在场车辆结构数据 <i class="fa fa-th-list"></i></h4>
+                    <div class="panel-tools">
+                        <div class="dropdown">
+                            <a data-toggle="dropdown" class="btn btn-xs dropdown-toggle btn-transparent-grey">
+                                <i class="fa fa-cog"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-light pull-right" role="menu">
+                                <li>
+                                    <a class="panel-refresh" href="#"> <i class="fa fa-refresh"></i>
+                                        <span>刷 新 数 据</span> </a>
+                                </li>
+                                <li>
+                                    <a class="panel-expand" href="#"> <i class="fa fa-expand"></i>
+                                        <span>全 屏 查 看</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-xs btn-link panel-close" href="#"> <i class="fa fa-times"></i> </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered" id="sample-table-1">
+                        <tbody>
+                        {% service_team as msg_lis %}
+                        <tr class="info">
+                            {% for msg_title in msg_lis %}
+                                <td class="center">{{ msg_title.caption }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td class="center">5</td>
+                            <td class="center">6</td>
+                            <td class="center">5</td>
+                            <td class="center">6</td>
+                            <td class="center">5</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered" id="sample-table-1">
+                        <tbody>
+                        <tr class="info">
+                            <td class="center">机修在场</td>
+                            <td class="center">事故在场(有机修项目)</td>
+                            <td class="center">等待备件</td>
+                            <td class="center">等待通知</td>
+                            <td class="center">其他原因</td>
+                        </tr>
+                        <tr>
+                            <td class="center">1</td>
+                            <td class="center">2</td>
+                            <td class="center">3</td>
+                            <td class="center">4</td>
+                            <td class="center">5</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end: CONTEXTUAL CLASSES -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- start: BASIC TABLE PANEL -->
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h4 class="panel-title">在场车辆信息看板 <i class="fa fa-table"></i>
+                    </h4>
+                    <div class="panel-tools">
+                        <div class="dropdown">
+                            <a data-toggle="dropdown" class="btn btn-xs dropdown-toggle btn-transparent-grey">
+                                <i class="fa fa-cog"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-light pull-right" role="menu">
+                                <li>
+                                    <a class="panel-refresh" href="#"> <i class="fa fa-refresh"></i>
+                                        <span>刷 新 窗 口</span> </a>
+                                </li>
+                                <li>
+                                    <a class="panel-expand" href="#"> <i class="fa fa-expand"></i>
+                                        <span>全 屏 查 看</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-xs btn-link panel-close" href="#"> <i class="fa fa-times"></i> </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover" id="sample-table-1">
+                        <thead>
+                        <tr>
+                            <th style="display: none">ID</th>
+                            <th>车牌号码</th>
+                            <th>工单号</th>
+                            <th>服务顾问</th>
+                            <th>快修班组</th>
+                            <th>机电班组</th>
+                            <th class="hidden-xs">维修内容</th>
+                            <th class="hidden-xs">当前状态</th>
+                            <th class="hidden-xs">预计交付日期</th>
+                            <th class="hidden-xs">预计交付时间</th>
+                            <th class="hidden-xs">实际交车日期</th>
+                            <th class="hidden-xs">实际交车时间</th>
+                            {% if request.team == "管理员组" %}
+                            <th class="hidden-xs">修改</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% unfinished_messages as msg_list %}
+                        {% for msg in msg_list %}
+                            <tr>
+                                <td style="display: none" class="msg_id">{{ msg.id }}</td>
+                                <td>{{ msg.vehicle_num }}</td>
+                                <td>{{ msg.wip }}</td>
+                                <td>{{ msg.sa }}</td>
+                                <td>{{ msg.quick_service_team }}</td>
+                                <td>{{ msg.service_team }}</td>
+                                <td class="hidden-xs">{{ msg.service_project }}</td>
+                                <td class="hidden-xs">{{ msg.service_status }}</td>
+                                <td class="hidden-xs">{{ msg.estimate_finish_date }}</td>
+                                <td class="hidden-xs">{{ msg.estimate_finish_time }}</td>
+                                <td class="hidden-xs">{{ msg.actual_finish_date }}</td>
+                                <td class="hidden-xs">{{ msg.actual_finish_time }}</td>
+                                {% if request.team == "管理员组" %}
+                                <td class="visible-md visible-lg hidden-sm hidden-xs">
+                                    <a href="#" class="btn btn-xs btn-blue tooltips" data-placement="top"
+                                       data-original-title="修改"><i class="fa fa-edit"></i></a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end: BASIC TABLE PANEL -->
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

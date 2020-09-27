@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block admin %}"active"{% endblock %}
+{% block css %}
+    <style>
+        .error-msg {
+            font-size: 8px;
+            color: red;
+            position: absolute;
+        }
+
+        .register-success {
+            font-size: 10px;
+            color: red;
+            position: absolute;
+        }
+    </style>
+{% endblock %}
+{% block heading %}后台管理{% endblock %}
+{% block main %}
+    <!-- start: PAGE CONTENT -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="tabbable">
+                <ul class="nav nav-tabs tab-padding tab-space-3 tab-blue" id="myTab4">
+                    <li class="active">
+                        <a data-toggle="tab" href="#panel_edit_account">
+                            用 户 信 息 修 改
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="panel_edit_account" class="tab-pane fade in active">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class='register-success'></p>
+                                <hr>
+                            </div>
+                            <div class="panel-body">
+                                <form class="smart-wizard form-horizontal" method="post">
+                                    {% csrf_token %}
+                                    <div id="wizard" class="swMain">
+                                        <div class="progress progress-xs transparent-black no-radius active">
+                                            <div aria-valuemax="100" aria-valuemin="0" role="progressbar"
+                                                 class="progress-bar partition-green step-bar">
+                                            </div>
+                                        </div>
+                                        <div id="step-1">
+                                            {% for file in form %}
+                                                <div class="form-group" id='register-field'>
+                                                    <label class="col-sm-3 control-label">
+                                                        {{ file.label }} <span class="symbol required"></span>
+                                                    </label>
+                                                    <div class="col-sm-7">
+                                                        {{ file }}
+                                                        <span class='error-msg'>{{ file.errors.0 }}</span>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="form-group">
+                                                <div class="col-sm-2 col-sm-offset-8">
+                                                    <button class="btn btn-blue" id='btnSubmit' type='submit'>
+                                                        信 息 提 交 <i class="fa fa-arrow-circle-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: PAGE CONTENT-->
+{% endblock %}

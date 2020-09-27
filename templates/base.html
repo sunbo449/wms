@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+{% load static %}
+{% load model_tags %}
+<html lang="en">
+<!--<![endif]-->
+<!-- start: HEAD -->
+<head>
+    <title>BMW - 维修车辆管理平台</title>
+    <!-- start: META -->
+    <meta charset="utf-8"/>
+    <!--[if IE]>
+    <meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1"/><![endif]-->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <!-- end: META -->
+    <!-- start: MAIN CSS -->
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/iCheck/skins/all.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/perfect-scrollbar/src/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/animate.css/animate.min.css' %}">
+    <!-- end: MAIN CSS -->
+    <!-- start: CSS REQUIRED FOR SUBVIEW CONTENTS -->
+    <link rel="stylesheet" href="{% static 'plugins/owl-carousel/owl-carousel/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/owl-carousel/owl-carousel/owl.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/summernote/dist/summernote.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fullcalendar/fullcalendar/fullcalendar.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-select/bootstrap-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/DataTables/media/css/DT_bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-fileupload/bootstrap-fileupload.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-daterangepicker/daterangepicker-bs3.css' %}">
+    <!-- end: CSS REQUIRED FOR THIS SUBVIEW CONTENTS-->
+    <!-- start: CORE CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles-responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/plugins.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themes/theme-default.css' %}" type="text/css" id="skin_color">
+    <link rel="stylesheet" href="{% static 'css/print.css' %}" type="text/css" media="print"/>
+    {% block css %}{% endblock %}
+    <!-- end: CORE CSS -->
+    <link rel="shortcut icon" href="{% static 'images/logo.ico' %}"/>
+</head>
+<!-- end: HEAD -->
+<!-- start: BODY -->
+<body class="sidebar-close horizontal-menu-fixed">
+
+<div class="main-wrapper">
+    <!-- start: TOPBAR -->
+    <header class="topbar navbar navbar-inverse navbar-fixed-top inner">
+        <!-- start: TOPBAR CONTAINER -->
+        <div class="container">
+            <div class="navbar-header">
+                <a class="sb-toggle-left hidden-md hidden-lg" href="#">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <!-- start: LOGO -->
+                <a class="navbar-brand" href="">
+                    <img src="{% static 'images/logo.png' %}" alt="SUN"/>
+                </a>
+                <!-- end: LOGO -->
+            </div>
+            <div class="topbar-tools">
+                <!-- start: TOP NAVIGATION MENU -->
+                <ul class="nav navbar-right">
+                    <!-- start: USER DROPDOWN -->
+                    <li class="dropdown current-user">
+                        <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" data-close-others="true"
+                           href="#">
+                            <img src="{% static 'images/avatar-1-small.jpg' %}" class="img-circle" alt=""> <span
+                                class="hidden-xs" id="username">{{ request.wms.0 }}</span> <i
+                                class="fa fa-caret-down "></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-dark">
+                            <li>
+                                <a href="#">
+                                    我 的 信 息
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'account:logout' %}">
+                                    退 出 系 统
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- end: TOP NAVIGATION MENU -->
+            </div>
+        </div>
+        <!-- end: TOPBAR CONTAINER -->
+    </header>
+    <!-- end: TOPBAR -->
+    <!-- start: HORIZONTAL MENU -->
+    <div id="horizontal-menu" class="navbar navbar-inverse hidden-sm hidden-xs inner">
+        <div class="container">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class={% block index %}{% endblock %}>
+                        <a href="{% url 'business:index' %}">
+                            <i class="fa fa-home"></i> 首 页
+                        </a>
+                    </li>
+                    <li class={% block spe %}{% endblock %}>
+                        <a class="dropdown-toggle" href="{% url 'business:spectaculars' %}">
+                            <i class="fa fa-cogs"></i> 动 态 看 板 <i class="icon-arrow"></i>
+                        </a>
+                    </li>
+                    <li class={% block non %}{% endblock %}>
+                        <a class="dropdown-toggle" href="{% url 'business:unfinished' %}">
+                            <i class="fa fa-hdd-o"></i> 在 场 车 辆 <i class="icon-arrow"></i>
+                        </a>
+                    </li>
+                    <li class={% block data %}{% endblock %}>
+                        <a class="dropdown-toggle" href="{% url 'business:data_report' %}">
+                            <i class="fa fa-bar-chart-o"></i> 车 间 报 表 <i class="icon-arrow"></i>
+                        </a>
+                    </li>
+                    {% if request.team == '管理员组' %}
+                    <li class={% block admin %}{% endblock %}>
+                        <a class="dropdown-toggle" href="{% url 'account:account' %}">
+                            <i class="fa fa-user"></i> 用 户 管 理 <i class="icon-arrow"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+    <!-- end: HORIZONTAL MENU -->
+    <!-- start: PAGESLIDE LEFT -->
+    <nav id="pageslide-left" class="pageslide inner">
+        <div class="navbar-content">
+            <!-- start: SIDEBAR -->
+            <div class="main-navigation left-wrapper transition-left">
+                <div class="navigation-toggler hidden-sm hidden-xs">
+                    <a href="#" class="sb-toggle-left">
+                    </a>
+                </div>
+                <div class="user-profile border-top padding-horizontal-10 block">
+                    <div class="inline-block">
+                        <img src="{% static 'images/avatar-1.jpg' %}" alt="">
+                    </div>
+                    <div class="inline-block">
+                        <h5 class="no-margin"> Welcome </h5>
+                        <h4 class="no-margin"> {{ request.wms.0 }} </h4>
+                        <a class="btn user-options sb_toggle">
+                            <i class="fa fa-cog"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- end: SIDEBAR -->
+        </div>
+    </nav>
+    <!-- end: PAGESLIDE LEFT -->
+    <!-- start: MAIN CONTAINER -->
+    <div class="main-container inner">
+        <!-- start: PAGE -->
+        <div class="main-content">
+            <!-- start: PANEL CONFIGURATION MODAL FORM -->
+            <div class="modal fade" id="panel-config" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+            <!-- end: SPANEL CONFIGURATION MODAL FORM -->
+            <div class="container">
+                <!-- start: PAGE HEADER -->
+                <!-- start: TOOLBAR -->
+                <div class="toolbar row">
+                    <div class="col-sm-6 hidden-xs">
+                        <div class="page-header">
+                            <!-- 页面名称和介绍 -->
+                            <h3>{% block heading %}{% endblock %}<small>{% block heading_main %}{% endblock %}</small>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        <a href="javascript:" class="close-subviews">
+                            <i class="fa fa-times"></i> 关 闭
+                        </a>
+                        <div class="toolbar-tools pull-right">
+                            <!-- start: TOP NAVIGATION MENU -->
+                            <ul class="nav navbar-right">
+                                <!-- start: TO-DO DROPDOWN -->
+                                {% if request.team == '管理员组' %}
+                                <li class="dropdown reg-info">
+                                    <a data-toggle="dropdown" data-hover="dropdown" class="btn add-event"
+                                       data-close-others="true" href="#newFullEvent">
+                                        <i class="fa fa-plus-square fa-spin"></i> 车辆登记
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li class="dropdown">
+                                    <a data-hover="dropdown" class="dropdown-toggle"
+                                       href="{% url 'business:spectaculars' %}">
+                                        <i class="fa fa-cogs  fa-spin"></i> 动态看板
+                                    </a>
+                                </li>
+                                <li class="menu-search">
+                                    <a href="#">
+                                        <i class="fa fa-search"></i> 搜 索
+                                    </a>
+                                    <!-- start: SEARCH POPOVER -->
+                                    <div class="popover bottom search-box transition-all">
+                                        <div class="arrow"></div>
+                                        <div class="popover-content">
+                                            <!-- start: SEARCH FORM -->
+                                            <form class="" id="searchform" action="#">
+                                                <div class="input-group">
+                                                    <label for=""><input type="text" class="form-control"
+                                                                         placeholder="Search"></label>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-main-color btn-squared"
+                                                                type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </form>
+                                            <!-- end: SEARCH FORM -->
+                                        </div>
+                                    </div>
+                                    <!-- end: SEARCH POPOVER -->
+                                </li>
+                            </ul>
+                            <!-- end: TOP NAVIGATION MENU -->
+                        </div>
+                    </div>
+                </div>
+                <!-- end: TOOLBAR -->
+                <!-- end: PAGE HEADER -->
+                <div class="row" style="height: 10px;"></div>
+                <!-- 页面内容继承-->
+                {% block main %}
+                {% endblock %}
+            </div>
+            <div class="subviews">
+                <div class="subviews-container"></div>
+            </div>
+        </div>
+        <!-- end: PAGE -->
+    </div>
+    <!-- end: MAIN CONTAINER -->
+    <!-- start: SUBVIEW FOR CALENDAR PAGE -->
+    <div id="newFullEvent">
+        <div class="noteWrap col-md-8 col-md-offset-2">
+            <h4>车辆信息录入 <small> Information Entry</small></h4>
+            <p id="error-msg" style="color: red; position: absolute;"></p>
+            <div class="panel-body">
+                <hr>
+                <form id="vehicleForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">
+                                    车 牌 号 码/ VIN<span class="symbol required"></span>
+                                </label>
+                                <input type="text" value="鲁A" class="form-control" name="vehicle_num" id="vehicle_num"
+                                       autocomplete="off" maxlength="7" style="text-transform: uppercase">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">
+                                    工 单 号 码 / WIP<span class="symbol required"></span>
+                                </label>
+                                <input type="number" placeholder="WIP" class="form-control" name="wip" id="wip"
+                                       autocomplete="off" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">
+                                    服 务 顾 问 / SA<span class="symbol required"></span>
+                                </label>
+                                <select class="form-control" name="sa" id="sa">
+                                    <option></option>
+                                    {% sa_team as sa_list %}
+                                    {% for sa in sa_list %}
+                                        <option value={{ sa.id }}>{{ sa.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">
+                                    交 车 时 间 / Delivery Time<span class="symbol required"></span>
+                                </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="date" class="form-control" id='out-data'
+                                               name="estimate_finish_date">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="time" class="form-control" name="estimate_finish_time">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">
+                                    本工单是否事故维修工单？ <span class="symbol required"></span>
+                                </label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-yes" value="是" name="accident_work_order">
+                                        YES
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-no" value="否" name="accident_work_order"
+                                               checked>
+                                        NO
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">
+                                    本工单是否摩托车维修工单？ <span class="symbol required"></span>
+                                </label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-yes" name="moto_work_order" value="是">
+                                        YES
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-no" name="moto_work_order" value="否"
+                                               checked>
+                                        NO
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group connected-group">
+                                <label class="control-label">
+                                    快 修 班 组/ Quick Team <span class="symbol required"></span>
+                                </label>
+                                <select class="form-control" name="quick_service_team" id="quick_service_team">
+                                    <option value="">--------</option>
+                                    {% quick_service_team as team_list %}
+                                    {% for team in team_list %}
+                                        <option value={{ team.id }}>{{ team.caption }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">
+                                            机 电 班 组 / Mechatronic Technician <span class="symbol required"></span>
+                                        </label>
+                                        <select class="form-control" name="service_team" id="service_team">
+                                            <option value="">--------</option>
+                                            {% service_team as service_team_list %}
+                                            {% for team in service_team_list %}
+                                                <option value={{ team.id }}>{{ team.caption }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">
+                                            维 修 项 目 / Service Project <span class="symbol required"></span>
+                                        </label>
+                                        <select class="form-control" name="service_project" id="service_project">
+                                            <option value="">--------</option>
+                                            {% service_project as service_project_list %}
+                                            {% for project in service_project_list %}
+                                                <option value={{ project.id }}>{{ project.caption }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">
+                                    是否包含机油保养 <span class="symbol required"></span>
+                                </label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-no" name="oil_service" value="是" checked>
+                                        YES
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-yes" name="oil_service" value="否">
+                                        NO
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">
+                                    <strong>本工是否为重复进场工单？</strong> <span class="symbol required"></span>
+                                </label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-yes" name="over_registration" value="是"
+                                               id="gender_female">
+                                        YES
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="grey radio-no" name="over_registration"
+                                               value="否" checked>
+                                        NO
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <span class="symbol required"></span> 必填项目
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                请务必准确的填写车辆维修信息，这将是数据统计分析的基础.
+                            </p>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-red btn-block" type="button" id="reset">
+                                重 新 录 入 <i class="fa fa-refresh"></i>
+                            </button>
+                            <br>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-yellow btn-block" type="button" id="FormSubmit">
+                                信 息 提 交 <i class="fa fa-arrow-circle-right"></i>
+                            </button>
+                            <br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% block other %}{% endblock %}
+</div>
+<!-- end: SUBVIEW FOR CALENDAR PAGE -->
+<!-- 车辆登记页面 -->
+<div id="readNote">
+    <div class="noteWrap col-md-8 col-md-offset-2">
+        <div class="panel panel-note">
+            <div class="e-slider owl-carousel owl-theme">
+                <div class="item">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- start: FOOTER -->
+<footer class="inner">
+    <div class="footer-inner">
+        <div class="pull-left">
+            2020 &copy; SUN BO by 济南宝悦行.
+        </div>
+        <div class="pull-right">
+            <span class="go-top"><i class="fa fa-chevron-up"></i></span>
+        </div>
+    </div>
+</footer>
+<!-- end: FOOTER -->
+<!-- start: MAIN JAVASCRIPTS -->
+<!--[if lt IE 9]>
+<script src="{% static 'plugins/respond.min.js'%}"></script>
+<script src="{% static 'plugins/excanvas.min.js'%}"></script>
+<script src="{% static 'plugins/jQuery/jquery-1.11.1.min.js'%}"></script>
+		<![endif]-->
+<!--[if gte IE 9]><!-->
+<script src="{% static 'plugins/jQuery/jquery-2.1.1.min.js' %}"></script>
+
+<!--<![endif]-->
+<script src="{% static 'plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'plugins/blockUI/jquery.blockUI.js' %}"></script>
+
+<script src="{% static 'plugins/iCheck/jquery.icheck.min.js' %}"></script>
+
+<script src="{% static 'plugins/moment/min/moment.min.js' %}"></script>
+
+<script src="{% static 'plugins/perfect-scrollbar/src/jquery.mousewheel.js' %}"></script>
+
+<script src="{% static 'plugins/perfect-scrollbar/src/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'plugins/bootbox/bootbox.min.js' %}"></script>
+
+<script src="{% static 'plugins/jquery.scrollTo/jquery.scrollTo.min.js' %}"></script>
+
+<script src="{% static 'plugins/ScrollToFixed/jquery-scrolltofixed-min.js' %}"></script>
+
+<script src="{% static 'plugins/jquery.appear/jquery.appear.js' %}"></script>
+
+<script src="{% static 'plugins/jquery-cookie/jquery.cookie.js' %}"></script>
+
+<script src="{% static 'plugins/velocity/jquery.velocity.min.js' %}"></script>
+
+<script src="{% static 'plugins/TouchSwipe/jquery.touchSwipe.min.js' %}"></script>
+
+<!-- end: MAIN JAVASCRIPTS -->
+<!-- start: JAVASCRIPTS REQUIRED FOR SUBVIEW CONTENTS -->
+<script src="{% static 'plugins/owl-carousel/owl-carousel/owl.carousel.js' %}"></script>
+<script src="{% static 'plugins/jquery-mockjax/jquery.mockjax.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-modal/js/bootstrap-modal.js' %}"></script>
+
+<script src="{% static 'plugins/bootstrap-modal/js/bootstrap-modalmanager.js' %}"></script>
+
+<script src="{% static 'plugins/fullcalendar/fullcalendar/fullcalendar.min.js' %}"></script>
+
+<script src="{% static 'plugins/bootstrap-switch/dist/js/bootstrap-switch.min.js' %}"></script>
+
+<script src="{% static 'plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-fileupload/bootstrap-fileupload.min.js' %}"></script>
+<script src="{% static 'plugins/DataTables/media/js/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static 'plugins/DataTables/media/js/DT_bootstrap.js' %}"></script>
+<script src="{% static 'plugins/truncate/jquery.truncate.js' %}"></script>
+<script src="{% static 'plugins/summernote/dist/summernote.min.js' %}"></script>
+
+<script src="{% static 'plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+
+<script src="{% static 'js/subview.js' %}"></script>
+
+<script src="{% static 'js/subview-examples.js' %}"></script>
+
+<script src="{% static 'js/my-js.js' %}"></script>
+
+<!-- end: JavaSCRIPTS REQUIRED FOR SUBVIEW CONTENTS -->
+<!-- start: JavaSCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+<script src="{% static 'plugins/holder/holder.js' %}"></script>
+<script src="{% static 'js/pages-calendar.js' %}"></script>
+
+<!-- end: JavaSCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+<script src="{% static 'js/main.js' %}"></script>
+{% block js %}{% endblock %}
+<script>
+    jQuery(document).ready(function () {
+        Main.init();
+        SVExamples.init();
+        Calendar.init();
+
+        $("#FormSubmit").on('click', function () {
+            $('#error-msg').empty();
+            $.ajax({
+                url: "{% url 'business:vehicle_info' %}",
+                type: "POST",
+                data: $('#vehicleForm').serialize(),
+                success: function (res) {
+                    if (res.status) {
+                        location.href = "/spectaculars"
+                        $('#error-msg').text(res.data)
+                        // 预留样式
+                        {#$(".radio-yes").parent().prop("class", "iradio_minimal-grey")#}
+                        {#$(".radio-no").parent().prop("class", "iradio_minimal-grey checked")#}
+                    } else {
+                        $('#error-msg').text(res.data)
+                    }
+                }
+            })
+        })
+    });
+</script>
+</body>
+<!-- end: BODY -->
+</html>

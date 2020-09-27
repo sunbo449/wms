@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block index %}"active"{% endblock %}
+{% block heading %}
+    车间实时信息
+{% endblock %}
+{% block main %}
+    <!-- start: PAGE CONTENT -->
+    <div class="row">
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-default panel-white core-box">
+                <div class="panel-tools">
+                    <a href="#" class="btn btn-xs btn-link panel-close">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+                <div class="panel-body no-padding">
+                    <div class="partition-red padding-20 text-center core-icon">
+                        <i class="fa fa-2x icon-big">12</i>
+                    </div>
+                    <div class="padding-20 core-content">
+                        <h3 class="title block no-margin">机修台次</h3><br>
+                        <span class="subtitle"> 维修工单中包含机修项目的车辆</span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix no-padding">
+                    <a href="#" class="col-xs-12 padding-10 text-center text-white tooltips partition-blue"
+                       data-toggle="tooltip" data-placement="top" title="显示车辆明细"><i class="fa fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-default panel-white core-box">
+                <div class="panel-tools">
+                    <a href="#" class="btn btn-xs btn-link panel-close">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+                <div class="panel-body no-padding">
+                    <div class="partition-blue padding-20 text-center core-icon">
+                        <i class="fa fa-2x icon-big">30</i>
+                    </div>
+                    <div class="padding-20 core-content">
+                        <h3 class="title block no-margin">机油保养</h3><br>
+                        <span class="subtitle"> 包含更换机油项目的车辆. </span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix no-padding">
+                    <a href="#" class="col-xs-12 padding-10 text-center text-white tooltips partition-green"
+                       data-toggle="tooltip" data-placement="top" title="显示车辆明细"><i class="fa fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-white panel-white core-box">
+                <div class="panel-tools">
+                    <a href="#" class="btn btn-xs btn-link panel-close">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+                <div class="panel-body no-padding">
+                    <div class="partition-red padding-20 text-center core-icon">
+                        <i class="fa fa-2x icon-big">25</i>
+                    </div>
+                    <div class="padding-20 core-content">
+                        <h3 class="title block no-margin">保养台次</h3><br>
+                        <span class="subtitle">所有包含保养项目的台次.</span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix no-padding">
+                    <a href="#" class="col-xs-12 padding-10 text-center text-white tooltips partition-blue"
+                       data-toggle="tooltip" data-placement="top" title="显示车辆明细"><i class="fa fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-default panel-white core-box">
+                <div class="panel-tools">
+                    <a href="#" class="btn btn-xs btn-link panel-close">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+                <div class="panel-body no-padding">
+                    <div class="partition-blue padding-20 text-center core-icon">
+                        <i class="fa fa-2x icon-big">32</i>
+                    </div>
+                    <div class="padding-20 core-content">
+                        <h3 class="title block no-margin">事故维修</h3><br>
+                        <span class="subtitle"> 包含钣喷维修项目的台次. </span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix no-padding">
+                    <a href="#" class="col-xs-12 padding-10 text-center text-white tooltips partition-green"
+                       data-toggle="tooltip" data-placement="top" title="显示车辆明细"><i class="fa fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-md-7">
+            <div class="panel panel-blue">
+                <div class="panel-heading border-light">
+                    <h4 class="panel-title">日进场台次数据</h4>
+                </div>
+                <div class="panel-body no-padding partition-white">
+                    <div class="col-md-11 col-lg-12 no-padding partition-white">
+                        <div class="partition">
+                            <div class="partition-body padding-15">
+                                <div class="height-300">
+                                    <div id="chart1" class='with-3d-shadow with-transitions'>
+                                        <svg></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-5">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel partition-blue">
+                        <div class="panel-body padding-20">
+                            <div class="easy-pie-chart">
+                                <span class="bounce"><i class="fa fa-2x icon-big">32</i><span
+                                        class="text-small">台</span></span><br>
+                                <div class="label-chart">
+                                    <h3 class="no-margin">当日进场</h3>
+                                </div>
+                            </div>
+                            <div class="text-center space15">
+                                <span class="block">包括重复进场台次.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="panel partition-green">
+                        <div class="panel-body padding-20">
+                            <div class="easy-pie-chart">
+                                <span class="bounce"><i class="fa fa-2x icon-big">8</i><span class="text-small">台</span></span><br>
+                                <div class="label-chart">
+                                    <h3 class="no-margin">重复进场</h3>
+                                </div>
+                            </div>
+                            <div class="text-center space15">
+                                <span class="block">指以前开具的工单.</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="panel panel-default panel-white core-box">
+                        <div class="panel-tools">
+                            <a href="#" class="btn btn-xs btn-link panel-close">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                        <div class="panel-body no-padding">
+                            <div class="partition-blue padding-20 text-center core-icon">
+                                <i class="fa fa-2x icon-big">2</i>
+                            </div>
+                            <div class="padding-20 core-content"><br>
+                                <h3 class="title block no-margin">摩托车台次</h3><br>
+                                <span class="subtitle"> 统计所有进场维修保养的摩托车辆. </span><br>
+                            </div>
+                        </div>
+                        <div class="panel-footer clearfix no-padding">
+                            <a href="#" class="col-xs-12 padding-10 text-center text-white tooltips partition-green"
+                               data-toggle="tooltip" data-placement="top" title="显示车辆明细"><i
+                                    class="fa fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-blue">
+                <div class="panel-heading border-light">
+                    <h4 class="panel-title">维修技师当日接车台次</h4>
+                    <ul class="panel-heading-tabs border-light">
+                        <li class="panel-tools">
+                            <a class="btn btn-xs btn-link panel-close" href="#">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body partition-white">
+                    <div class="col-md-12">
+                        <div class="height-350">
+                            <div id="chart4" class='with-3d-shadow with-transitions'>
+                                <svg></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-blue">
+                <div class="panel-heading border-light">
+                    <h4 class="panel-title">SA当日接车台次</h4>
+                    <ul class="panel-heading-tabs border-light">
+                        <li class="panel-tools">
+                            <a class="btn btn-xs btn-link panel-close" href="#">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body partition-white">
+                    <div class="col-md-12">
+                        <div class="height-350">
+                            <div id="chart" class='with-3d-shadow with-transitions'>
+                                <svg></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: PAGE CONTENT-->
+{% endblock %}

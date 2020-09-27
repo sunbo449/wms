@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- start: HEAD -->
+<head>
+    <title>BMW - 机修车辆管理平台</title>
+    <!-- start: META -->
+    <meta charset="utf-8"/>
+    <!--[if IE]>
+    <meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1"/><![endif]-->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <!-- end: META -->
+    <!-- start: MAIN CSS -->
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/animate.css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/iCheck/skins/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles-responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/iCheck/skins/all.css' %}">
+    <!-- end: MAIN CSS -->
+    <!-- start: CSS REQUIRED FOR THIS PAGE ONLY -->
+    <!-- end: CSS REQUIRED FOR THIS PAGE ONLY -->
+</head>
+<!-- end: HEAD -->
+<!-- start: BODY -->
+<body class="login">
+<div class="row">
+    <div class="main-login col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}">
+        </div>
+        <!-- start: LOGIN BOX -->
+        <div class="box-login">
+            <h3>BMW机修车辆管理平台</h3>
+            <br>
+            <form id="loginForm">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-group">
+                        <span class="input-icon">
+                            <input type="text" class="form-control" name="mobile_phone" placeholder="手机号码"
+                                   autocomplete="off">
+                            <i class="fa fa-user"></i>
+                        </span>
+                    </div>
+                    <div class="form-group form-actions">
+                        <span class="input-icon">
+                            <input type="password" class="form-control password" name="password" placeholder="密码">
+                            <i class="fa fa-lock"></i>
+                            <a class="forgot" href="#">
+                                忘记密码？
+                            </a>
+                        </span>
+                    </div>
+                    <div class="form-actions">
+                        <label class="checkbox-inline" id="error-msg" style="color: red;"></label>
+                        <button type="button" class="btn btn-green pull-right" id="loginSubmit">
+                            登录 <i class="fa fa-arrow-circle-right"></i>
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+            <!-- start: COPYRIGHT -->
+            <div class="copyright">
+                2020 &copy; SunBo Network Studio
+            </div>
+            <!-- end: COPYRIGHT -->
+        </div>
+        <!-- end: LOGIN BOX -->
+        <!-- start: FORGOT BOX -->
+        <div class="box-forgot">
+            <h3>找回你的密码?</h3>
+            <p>
+                请输入您的手机号，通过短信验证来找回密码.
+            </p>
+            <form class="form-forgot">
+                <div class="errorHandler alert alert-danger">
+                    <i class="fa fa-remove-sign fa-meh-o"></i> 发短信太贵！发不起短信！找管理员去吧！
+                     <i class="fa fa-mobile-phone"></i> 15053108622
+                </div>
+                <fieldset>
+                    <div class="form-group">
+{#                        <span class="input-icon">#}
+{#                            <input type="email" class="form-control" name="email" placeholder="暂时没钱发短信，所以找管理员去吧！">#}
+{#                            <i class="fa fa-envelope"></i> </span>#}
+                    </div>
+                    <div class="form-actions">
+                        <a class="btn btn-light-grey go-back">
+                            <i class="fa fa-chevron-circle-left"></i> 返 回 登 录
+                        </a>
+                        <button type="button" class="btn btn-green pull-right">
+                            提交也没用 <i class="fa fa-arrow-circle-right"></i>
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+            <!-- start: COPYRIGHT -->
+            <div class="copyright">
+                2020 &copy; SunBo Network Studio
+            </div>
+            <!-- end: COPYRIGHT -->
+        </div>
+        <!-- end: FORGOT BOX -->
+    </div>
+</div>
+<!-- start: MAIN JAVASCRIPTS -->
+<!--[if lt IE 9]>
+		<script src="{% static 'plugins/respond.min.js'%}"></script>
+<script src="{% static 'plugins/excanvas.min.js'%}"></script>
+<script src="{% static 'plugins/jQuery/jquery-1.11.1.min.js'%}"></script>
+		<![endif]-->
+<!--[if gte IE 9]><!-->
+<script src="{% static 'plugins/jQuery/jquery-2.1.1.min.js' %}"></script>
+<!--<![endif]-->
+<script src="{% static 'plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/iCheck/jquery.icheck.min.js' %}"></script>
+<script src="{% static 'plugins/jquery.transit/jquery.transit.js' %}"></script>
+<script src="{% static 'plugins/TouchSwipe/jquery.touchSwipe.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<!-- end: MAIN JAVASCRIPTS -->
+<!-- start: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+<script src="{% static 'plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+<script src="{% static 'js/login.js' %}"></script>
+<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+<script>
+    jQuery(document).ready(function () {
+        Main.init();
+        Login.init();
+
+        $('#loginSubmit').on('click', function () {
+             $('#error-msg').empty();
+            $.ajax({
+                url: "{% url 'account:login' %}",
+                type: "POST",
+                data: $('#loginForm').serialize(),
+                cache: false,
+                success: function (res) {
+                    if(res.status){
+                        location.href = "/"
+                    }else {
+                        $('#error-msg').text(res.errors)
+                    }
+                }
+            })
+        })
+
+    });
+</script>
+</body>
+<!-- end: BODY -->
+</html>

@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<!-- Template Name: Rapido - Responsive Admin Template build with Twitter Bootstrap 3.x Version: 1.3 Author: ClipTheme -->
+<!--[if IE 8]><html class="ie8 no-js" lang="en"><![endif]-->
+<!--[if IE 9]><html class="ie9 no-js" lang="en"><![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+	<!--<![endif]-->
+	<!-- start: HEAD -->
+	<head>
+		<title>BMW - 维修车辆管理平台</title>
+		<!-- start: META -->
+		<meta charset="utf-8" />
+		<!--[if IE]><meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1" /><![endif]-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta content="" name="description" />
+		<meta content="" name="author" />
+		<!-- end: META -->
+		<!-- start: MAIN CSS -->
+		<link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'plugins/font-awesome/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/styles-responsive.css' %}">
+        <link rel="stylesheet" href="{% static 'plugins/animate.css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/print.css' %}">
+		<!-- end: MAIN CSS -->
+		<!-- start: CSS REQUIRED FOR THIS PAGE ONLY -->
+		<!-- end: CSS REQUIRED FOR THIS PAGE ONLY -->
+		<link rel="shortcut icon" href="{% static 'images/logo.ico' %}" />
+	</head>
+	<!-- end: HEAD -->
+	<!-- start: BODY -->
+	<body class="error-full-page">
+		<!-- start: PAGE -->
+		<div class="container">
+			<div class="row">
+				<!-- start: 404 -->
+				<div class="col-sm-12 page-error animated shake">
+					<div class="error-number text-azure">
+						404
+					</div>
+                    <br><br><br>
+					<div class="error-details col-sm-6 col-sm-offset-3">
+						<h2>您的账号暂无权限访问该页面！！</h2><br><br>
+						<p>
+							古之立大事者，不惟有超世之才，亦必有坚忍不拔之志. -- 陶行知
+							<br><br>
+							一个有坚强心志的人，财产可以被人掠夺，勇气却不会被人剥夺的. -- 雨果
+							<br><br>
+							在劳力上劳心，是一切发明之母。事事在劳力上劳心，变可得事物之真理。 -- 陶行知
+							<br><br>
+							<a href="{% url 'business:index' %}" class="btn btn-red btn-return">
+								返 回 首 页
+							</a>
+							<br><br>
+							你想知道人生哲理吗 ?
+							<br><br>
+							聪明的资质、内在的干劲、勤奋的工作态度和坚忍不拔的精神，这些是成功所需要的其他条件. -- 贝弗里奇
+						</p>
+					</div>
+				</div>
+				<!-- end: 404 -->
+			</div>
+		</div>
+		<!-- end: PAGE -->
+		<!-- start: MAIN JAVASCRIPTS -->
+		<!--[if lt IE 9]>
+        <script src='{% static 'plugins/respond.min.js' %}'></script>
+<script src='{% static 'plugins/excanvas.min.js' %}'></script>
+<script src='{% static 'plugins/jQuery/jquery-1.11.1.min.js' %}'></script>
+		<![endif]-->
+		<!--[if gte IE 9]><!-->
+        <script src='{% static 'plugins/jQuery/jquery-2.1.1.min.js' %}'></script>
+		<!--<![endif]-->
+        <script src='{% static 'plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js' %}'></script>
+        <script src='{% static 'plugins/bootstrap/js/bootstrap.min.js' %}'></script>
+        <script src='{% static 'plugins/jquery-cookie/jquery.cookie.js' %}'></script>
+        <script src='{% static 'plugins/TouchSwipe/jquery.touchSwipe.min.js' %}'></script>
+        <script src='{% static 'js/main.js' %}'></script>
+		<!-- end: MAIN JAVASCRIPTS -->
+		<script>
+			jQuery(document).ready(function() {
+				Main.init();
+			});
+		</script>
+	</body>
+	<!-- end: BODY -->
+</html>

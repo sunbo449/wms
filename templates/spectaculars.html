@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load model_tags %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal.css' %}">
+    <style>
+        .small-vel {
+            font-size: 10px;
+        }
+
+        .service-status {
+            position: absolute;
+            color: yellow;
+            font-size: 5px;
+        }
+
+        .team-name {
+            margin-bottom: -15px !important;
+        }
+
+        .service-team-title {
+            margin-bottom: 3px;
+        }
+    </style>
+{% endblock %}
+{% block spe %}"active"{% endblock %}
+
+{% block heading %}班组车辆动态看板 <i class="fa fa-cog fa-spin"></i>{% endblock %}
+
+{% block main %}
+    <!-- start: PAGE CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <div class="pricing-table veh-table">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: PAGE CONTENT-->
+
+{% endblock %}
+
+{% block other %}
+    <div id="stack1" class="modal extended-modal fade no-display" tabindex="-1" data-focus-on="input:first">
+        <div class="modal-header btn-status-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                &times;
+            </button>
+            <h4 class="modal-title status-veh-num"></h4>
+        </div>
+        <div class="modal-body btn-status-body">
+            {% if request.team == "管理员组" %}
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group col-md-6">
+                        <button type="button" class="btn btn-dark-green dropdown-toggle btn-block btn-lg"
+                                data-toggle="dropdown">
+                            转 大 车 间 <span class="caret"></span>
+                        </button>
+                        <br><br>
+                        <ul class="dropdown-menu col-md-12">
+                            {% service_team as service_list %}
+                            {% for team_title in service_list %}
+                                <li data-dismiss="modal">
+                                    <button class="btn btn-light-grey btn-sm service-status-operate service-team-title"
+                                            data-dismiss="modal">
+                                        {{ team_title }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="btn-group col-md-6">
+                        <button type="button" class="btn btn-azure dropdown-toggle btn-block btn-lg"
+                                data-toggle="dropdown">
+                            转 小 车 间 <span class="caret"></span>
+                        </button>
+                        <br><br>
+                        <ul class="dropdown-menu col-md-12">
+                            {% quick_service_team as quick_list %}
+                            {% for quick_team in quick_list %}
+                                <li data-dismiss="modal">
+                                    <button class="btn btn-social btn-sm btn-block service-team-title service-status-operate"
+                                            data-dismiss="modal">
+                                        {{ quick_team }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <br>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group col-md-6">
+                        <button class="btn btn-yellow btn-lg btn-block service-status-operate" data-dismiss="modal">
+                            <i class="fa fa-pause"></i>暂停等件
+                        </button>
+                    </div>
+                    <div class="btn-group col-md-6">
+                        <button class="btn btn-dark-yellow btn-lg btn-block service-status-operate"
+                                data-dismiss="modal">
+                            <i class="fa fa-pause"></i>暂停等信
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group col-md-6">
+                        <button class="btn btn-green btn-lg btn-block service-status-operate" data-dismiss="modal">
+                            <i class="fa fa-arrow-circle-right"></i>车转钣喷
+                        </button>
+                    </div>
+                    <div class="btn-group col-md-6">
+                        <button class="btn btn-dark-green btn-lg btn-block service-status-operate" data-dismiss="modal">
+                            <i class="fa fa-arrow-circle-right"></i>正常维修
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-blue btn-lg btn-block service-status-operate" data-dismiss="modal">
+                    <i class="fa fa-mail-forward"></i>车辆路试
+                </button>
+                <br>
+            {% endif %}
+            <button class="btn btn-green btn-lg btn-block service-status-operate" data-dismiss="modal">
+                <i class="fa fa-check-square"></i>车辆终检
+            </button>
+            <br>
+            <button class="btn btn-dark-red btn-lg btn-block service-status-operate" data-dismiss="modal">
+                <i class="fa fa-thumbs-up"></i>完工交车
+            </button>
+            <br>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/ui-modals.js' %}"></script>
+    <script>
+        jQuery(document).ready(function () {
+            UIModals.init();
+            WebMessage();
+
+            // 点击打卡车辆，使用ajax向服务器传递数据，进行数据操作；
+            $('.service-status-operate').on('click', function () {
+                var veh_id = $(this).prop('id');
+                console.log(veh_id)
+                var veh_status = $(this).text();
+                var veh_num = $('.status-veh-num').text();
+                $.ajax({
+                    url: "{% url 'business:vehicle_status_edit' %}",
+                    type: "GET",
+                    data: {
+                        veh_status: veh_status,
+                        veh_num: veh_num
+                    },
+                    success: function (res) {
+                        if (res.status === true) {
+                            console.log(123)
+                            WebMessage();
+                        }
+                    }
+                })
+            })
+        })
+
+        // WebSocket 处理函数
+        function WebMessage() {
+            // 使用 websocket channels 向后端请求数据
+            var ws = '';
+            // 创建连接
+            ws = new WebSocket("ws://127.0.0.1:8000/spectaculars/8899");
+            // 连接成功后，接收服务器发送回来的信息
+            ws.onopen = function () {
+                ws.send("role");
+            }
+            ws.onmessage = function (event) {
+                // 每次更新数据之前，先数据清除，防止数据重复加载
+                $('.veh-table').html("");
+                var result = JSON.parse(event.data);
+                // 遍历服务器传递的数据（字典格式），循环创建dom元素，渲染到页面
+                $.each(result.data, function (k, value) {
+                    var div = "<div class='col-lg-12 col-md-12 col-xs-12 pricing-blue team-name'>" +
+                        "<div class='row' id=" + k + ">" +
+                        "<ul class='plan plan2 featured col-lg-1 col-md-1 col-xs-12 team-title'>" +
+                        "<li class='plan-name'><small class='team'>" + k + "</small></li></ul></div></div>"
+                    $('.veh-table').append(div);
+
+                    $.each(value, function (num, s) {
+                        var ul = "<ul class='plan plan1 col-lg-1 col-md-1 col-xs-12'>" +
+                            "<li class='plan-name demo veh-num' href='#stack1' data-toggle='modal' id='" + k + num + "'>" +
+                            "<small class='small-vel'>" + num + "</small>" + "&nbsp;" +
+                            "<span class='service-status'>" + s.trim()[3] + "</span>" + "</li></ul>"
+                        $("#" + k).append(ul);
+
+                        // 循环给每个车牌号码添加点击事件，id是 车牌号 + 班组组合；防止重复；
+                        $("#" + k + num).on('click', function () {
+                            {#var title = $(this).find('small').text();#}
+                            $('.modal-title').text($(this).prop('id'));
+                        })
+                    })
+                })
+            }
+        }
+
+    </script>
+{% endblock %}
