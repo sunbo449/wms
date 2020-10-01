@@ -88,3 +88,38 @@ class ServiceVehicle(models.Model):
     class Meta:
         verbose_name = "机电车辆信息表"
         verbose_name_plural = verbose_name
+
+
+class VehicleRoadTest(models.Model):
+    """车辆路试信息"""
+    driver = models.CharField(max_length=32, verbose_name='试车司机', null=True, blank=True)
+    wip = models.CharField(max_length=32, verbose_name="工单号", null=True, blank=True)
+    vehicle_num = models.CharField(max_length=32, verbose_name="车牌号码", db_index=True)
+    service_team = models.CharField(max_length=32, verbose_name="维修班组", db_index=True)
+    service_status = models.CharField(
+        max_length=32, default="车辆路试", verbose_name="维修状态", db_index=True)
+    start_time = models.DateTimeField(
+        auto_now_add=True, verbose_name="开始时间")
+    finish_time = models.DateTimeField(
+        auto_now=True, verbose_name="结束时间")
+
+    def __str__(self):
+        return self.vehicle_num
+
+    class Meta:
+        verbose_name = "路试车辆信息表"
+        verbose_name_plural = verbose_name
+
+
+class FQC(models.Model):
+    """车辆终检信息"""
+    inspector = models.CharField(max_length=32, verbose_name="质检员", null=True, blank=True)
+    wip = models.CharField(max_length=32, verbose_name="工单号", null=True, blank=True)
+    vehicle_num = models.CharField(max_length=32, verbose_name="车牌号码", db_index=True)
+    service_team = models.CharField(max_length=32, verbose_name="维修班组", db_index=True)
+    service_status = models.CharField(
+        max_length=32, default="车辆终检", verbose_name="维修状态", db_index=True)
+    start_time = models.DateTimeField(
+        auto_now_add=True, verbose_name="开始时间")
+    finish_time = models.DateTimeField(
+        auto_now=True, verbose_name="结束时间")

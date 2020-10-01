@@ -2,6 +2,7 @@ import random
 from datetime import datetime
 from business.models import VehicleInfo, QuickServiceVehicle, ServiceVehicle
 from account import models
+from business.models import VehicleInfo
 
 
 def vehicle_info_validation(request):
@@ -24,9 +25,14 @@ def vehicle_info_validation(request):
         error_msg = "车牌号输入不正确"
         return error_msg
 
+    # 如果输入发工单号重复了，那么不允许
+    if VehicleInfo.objects.filter(wip=wip).exists():
+        error_msg = '工单号重复了！'
+        return error_msg
+
     # 如果没有输入工单号码，那么将会自动生成当前日期 + 随机四位数字的工单号，保证工单号的唯一性
     if wip == "":
-        num = random.randint(1111, 9999)
+        num = random.randint(11111, 99999)
         wip = timer + str(num)
 
     if sa == "":

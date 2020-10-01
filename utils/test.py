@@ -4,7 +4,12 @@
 
 """
 
-from datetime import datetime
-import time
+info = [
+    {'k1':(1),'k2':{'k9':'oldboy','k10':'一天天'}},
+    (11,22,33,44),
+    {199,2,3,4,5},
+    True,
+    ['武沛齐','景女神',{'extra':("alex",'eric',[18,20])}]
+]
 
-print(datetime.now().strftime("%Y%m%d"))
+print(info[1][3])

@@ -126,6 +126,13 @@
                 </button>
                 <br>
             {% endif %}
+            {% if request.team == "管理员组" or request.team == "司机组" %}
+                   <button class="btn btn-blue btn-lg btn-block btn-road-test" data-dismiss="modal">
+                    <i class="fa fa-mail-forward"></i>结束路试
+                </button>
+                <br>
+            {% endif %}
+            {% if request.team != "司机组" %}
             <button class="btn btn-green btn-lg btn-block service-status-operate" data-dismiss="modal">
                 <i class="fa fa-check-square"></i>车辆终检
             </button>
@@ -134,6 +141,7 @@
                 <i class="fa fa-thumbs-up"></i>完工交车
             </button>
             <br>
+            {% endif %}
         </div>
     </div>
 
@@ -147,8 +155,6 @@
 
             // 点击打卡车辆，使用ajax向服务器传递数据，进行数据操作；
             $('.service-status-operate').on('click', function () {
-                var veh_id = $(this).prop('id');
-                console.log(veh_id)
                 var veh_status = $(this).text();
                 var veh_num = $('.status-veh-num').text();
                 $.ajax({
@@ -160,8 +166,29 @@
                     },
                     success: function (res) {
                         if (res.status === true) {
-                            console.log(123)
                             WebMessage();
+                        }else {
+                            console.log("车辆打卡错误信息！")
+                        }
+                    }
+                })
+            })
+
+            $('.btn-road-test').on('click', function (){
+                var road_status = $(this).text();
+                var road_veh_num = $('.status-veh-num').text();
+                $.ajax({
+                    url: "{% url 'business:vehicle_road_status_edit' %}",
+                    type: "GET",
+                    data: {
+                        road_status: road_status,
+                        road_veh_num: road_veh_num
+                    },
+                    success: function(res){
+                        if (res.status === true){
+                            WebMessage();
+                        }else {
+                            console.log("路试错误信息！" + res.data)
                         }
                     }
                 })
@@ -199,7 +226,6 @@
 
                         // 循环给每个车牌号码添加点击事件，id是 车牌号 + 班组组合；防止重复；
                         $("#" + k + num).on('click', function () {
-                            {#var title = $(this).find('small').text();#}
                             $('.modal-title').text($(this).prop('id'));
                         })
                     })
