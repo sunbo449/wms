@@ -5,7 +5,7 @@
     # 3.同时车辆维修状态也要改成正常维修的状态
 """
 from business import models
-
+from django.http import JsonResponse
 
 class ServiceStatusEdit:
     """封装操作车辆维修状态"""
@@ -69,10 +69,12 @@ class ServiceStatusEdit:
                 fqc_vehicle_status.service_status = self.veh_status
                 fqc_vehicle_status.save()
 
-                quick_service_fqc_vehicle = models.QuickServiceVehicle.objects.filter(wip=fqc_wip, quick_service_status='车辆终检').exists()
-                if quick_service_fqc_vehicle:
+                quick_service_fqc_vehicle = models.QuickServiceVehicle.objects.filter(wip=fqc_wip,
+                                                                                      quick_service_status='车辆终检')
+                print(quick_service_fqc_vehicle)
+                if quick_service_fqc_vehicle.exists():
+                    print(quick_service_fqc_vehicle.exists())
                     q_wip = quick_service_fqc_vehicle.first().wip
-                    print(q_wip)
                     veh_message = models.QuickServiceVehicle.objects.get(wip=q_wip)
                     veh_message.quick_service_status = self.veh_status
                     veh_message.save()
@@ -80,9 +82,7 @@ class ServiceStatusEdit:
                 service_fqc_vehicle = models.ServiceVehicle.objects.filter(wip=fqc_wip, service_status='车辆终检')
                 if service_fqc_vehicle.exists():
                     s_wip = service_fqc_vehicle.first().wip
-                    print(s_wip)
-                    veh_message = models.QuickServiceVehicle.objects.get(wip=s_wip)
+                    veh_message = models.ServiceVehicle.objects.get(wip=s_wip)
                     veh_message._service_status = self.veh_status
                     veh_message.save()
-
 

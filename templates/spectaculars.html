@@ -22,11 +22,16 @@
         .service-team-title {
             margin-bottom: 3px;
         }
+        .errors-msg{
+            position: absolute;
+            color: red;
+        }
     </style>
 {% endblock %}
 {% block spe %}"active"{% endblock %}
 
 {% block heading %}班组车辆动态看板 <i class="fa fa-cog fa-spin"></i>{% endblock %}
+{% block heading_main %}<span class="errors-msg"></span>{% endblock %}
 
 {% block main %}
     <!-- start: PAGE CONTENT -->
@@ -66,7 +71,7 @@
                             {% service_team as service_list %}
                             {% for team_title in service_list %}
                                 <li data-dismiss="modal">
-                                    <button class="btn btn-light-grey btn-sm service-status-operate service-team-title"
+                                    <button class="btn btn-light-grey btn-sm service-team-title"
                                             data-dismiss="modal">
                                         {{ team_title }}
                                     </button>
@@ -84,7 +89,7 @@
                             {% quick_service_team as quick_list %}
                             {% for quick_team in quick_list %}
                                 <li data-dismiss="modal">
-                                    <button class="btn btn-social btn-sm btn-block service-team-title service-status-operate"
+                                    <button class="btn btn-social btn-sm btn-block service-team-title"
                                             data-dismiss="modal">
                                         {{ quick_team }}
                                     </button>
@@ -153,7 +158,7 @@
             UIModals.init();
             WebMessage();
 
-            // 点击打卡车辆，使用ajax向服务器传递数据，进行数据操作；
+            // 车辆状态数据提交：试车、等待配件 等待消息 车转钣喷操作，点击打卡车辆，使用ajax向服务器传递数据，进行数据操作；
             $('.service-status-operate').on('click', function () {
                 var veh_status = $(this).text();
                 var veh_num = $('.status-veh-num').text();
@@ -168,12 +173,13 @@
                         if (res.status === true) {
                             WebMessage();
                         }else {
-                            console.log("车辆打卡错误信息！")
+                            $('.errors-msg').text("车辆打卡信息出现错误")
                         }
                     }
                 })
             })
 
+            //  车辆路试数据操作
             $('.btn-road-test').on('click', function (){
                 var road_status = $(this).text();
                 var road_veh_num = $('.status-veh-num').text();
@@ -188,10 +194,30 @@
                         if (res.status === true){
                             WebMessage();
                         }else {
-                            console.log("路试错误信息！" + res.data)
+                            $('.errors-msg').text("车辆路试信息出现错误")
                         }
                     }
                 })
+            })
+        })
+
+        $('.service-team-title').on('click', function(){
+            var passOnToTeam = $(this).text();
+            var careOfTeam = $('.status-veh-num').text();
+            $.ajax({
+                url: "{% url 'business:vehicle_care_of' %}",
+                type: "GET",
+                data: {
+                    pass_on_to_team : passOnToTeam,
+                    care_of_team: careOfTeam
+                },
+                success: function (res) {
+                    if (res.status === true){
+                        WebMessage();
+                    }else {
+                       $('.errors-msg').text(res.errors)
+                    }
+                }
             })
         })
 
@@ -208,6 +234,7 @@
             ws.onmessage = function (event) {
                 // 每次更新数据之前，先数据清除，防止数据重复加载
                 $('.veh-table').html("");
+                $('.errors-msg').text("");
                 var result = JSON.parse(event.data);
                 // 遍历服务器传递的数据（字典格式），循环创建dom元素，渲染到页面
                 $.each(result.data, function (k, value) {

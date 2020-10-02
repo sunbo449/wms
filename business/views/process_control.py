@@ -77,3 +77,46 @@ def vehicle_road_status_edit(request):
         return JsonResponse({'status': False, 'data': '试车结束问题'})
 
     return JsonResponse({'status': True})
+
+
+def vehicle_care_of(request):
+    """车辆转接操作"""
+    pass_on_to_team = request.GET.get("pass_on_to_team").replace(" ", "").strip()  # 转接目的班组
+    care_of_team = request.GET.get("care_of_team").replace(" ", "")[:4]  # 转接班组
+    vehicle_num = request.GET.get("care_of_team").replace(" ", "")[4:]  # 转接车牌号
+
+    if "快修" in care_of_team:  # 如果转接的班组信息中包含快修，那么肯定是快修班组，否则不处理
+        quick_service_vehicle_wip = models.QuickServiceVehicle.objects.filter(
+            quick_service_team=care_of_team, vehicle_num=vehicle_num).exclude(
+            quick_service_status='完工交车').first().wip
+
+        # 获取机电班组是否存在对应车辆信息
+        service_vehicle_info = models.ServiceVehicle.objects.filter(wip=quick_service_vehicle_wip)
+        if service_vehicle_info.exists():
+            return JsonResponse({'status': False, "errors": '该车辆信息，在被转工序存在，故不能转车，可修改车辆信息'})
+        else:
+            # 2. 查询目的班组是否存在这个车辆信息，根据wip查询，如果存在那么不允许转接，否则根据信息创建目的班组的车辆信息
+            # 3. 转接班组的转接车辆的默认状态更改为完工交车状态
+            # 更改转接班组的车辆状态为完工交车， 创建目的班组的信息
+            quick_service_vehicle = models.QuickServiceVehicle.objects.get(wip=quick_service_vehicle_wip)
+            quick_service_vehicle.quick_service_status = "完工交车"
+            quick_service_vehicle.save()
+            models.ServiceVehicle.objects.create(service_team=pass_on_to_team, wip=quick_service_vehicle_wip,
+                                                 vehicle_num=vehicle_num)
+
+    elif "机电" in care_of_team:
+        service_vehicle_wip = models.ServiceVehicle.objects.filter(
+            service_team=care_of_team, vehicle_num=vehicle_num).exclude(
+            service_status='完工交车').first().wip
+        quick_service_vehicle_info = models.QuickServiceVehicle.objects.filter(wip=service_vehicle_wip)
+        if quick_service_vehicle_info.exists():
+            return JsonResponse({'status': False, "errors": '该车辆信息，在被转工序存在，故不能转车，可修改车辆信息'})
+        else:
+            service_vehicle = models.ServiceVehicle.objects.get(wip=service_vehicle_wip)
+            service_vehicle.service_status = "完工交车"
+            service_vehicle.save()
+            models.QuickServiceVehicle.objects.create(quick_service_team=pass_on_to_team, wip=service_vehicle_wip,
+                                                      vehicle_num=vehicle_num)
+    else:
+        return JsonResponse({'status': False, "errors": '只有机电快修工序，才能互转车辆！其他工序不可！'})
+    return JsonResponse({'status': True})
