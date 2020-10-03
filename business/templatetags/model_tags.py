@@ -36,6 +36,19 @@ def service_team():
 
 
 @register.simple_tag
+def service_team_all():
+    """维修班组"""
+    team_list = []
+    team_obj = Team.objects.filter(caption__regex="机电")
+    quick_team_obj = Team.objects.filter(caption__regex="快修")
+    for team in team_obj:
+        team_list.append(team)
+    for team in quick_team_obj:
+        team_list.append(team)
+    return team_list
+
+
+@register.simple_tag
 def service_project():
     """维修项目"""
     project_list = []

@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load unfinished_tags %}
 {% load model_tags %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal.css' %}">
+{% endblock %}
 {% block non %}"active"{% endblock %}
 {% block heading %}在场车辆信息{% endblock %}
 {% block main %}
@@ -116,7 +121,7 @@
                             <th class="hidden-xs">实际交车日期</th>
                             <th class="hidden-xs">实际交车时间</th>
                             {% if request.team == "管理员组" %}
-                            <th class="hidden-xs">修改</th>
+                                <th class="hidden-xs">修改</th>
                             {% endif %}
                         </tr>
                         </thead>
@@ -125,7 +130,7 @@
                         {% for msg in msg_list %}
                             <tr>
                                 <td style="display: none" class="msg_id">{{ msg.id }}</td>
-                                <td>{{ msg.vehicle_num }}</td>
+                                <td class="vehicle-num">{{ msg.vehicle_num }}</td>
                                 <td>{{ msg.wip }}</td>
                                 <td>{{ msg.sa }}</td>
                                 <td>{{ msg.quick_service_team }}</td>
@@ -137,10 +142,11 @@
                                 <td class="hidden-xs">{{ msg.actual_finish_date }}</td>
                                 <td class="hidden-xs">{{ msg.actual_finish_time }}</td>
                                 {% if request.team == "管理员组" %}
-                                <td class="visible-md visible-lg hidden-sm hidden-xs">
-                                    <a href="#" class="btn btn-xs btn-blue tooltips" data-placement="top"
-                                       data-original-title="修改"><i class="fa fa-edit"></i></a>
-                                </td>
+                                    <td class="visible-md visible-lg hidden-sm hidden-xs">
+                                        <a href="#responsive" class="btn btn-xs btn-blue tooltips btn-vehicle-info"
+                                           data-placement="top"
+                                           data-original-title="修改" data-toggle="modal"><i class="fa fa-edit"></i></a>
+                                    </td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
@@ -152,6 +158,58 @@
         </div>
     </div>
 {% endblock %}
+{% block other %}
+    <div id="responsive" class="modal extended-modal fade no-display" tabindex="-1" data-width="760">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">
+                                    车 牌 号 码 <span class="symbol required"></span>
+                                </label>
+                                <input type="text" placeholder="Insert your First Name" class="form-control"
+                                       id="vehicle-number" name="firstname">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">
+                                    工 单 号 码 <span class="symbol required"></span>
+                                </label>
+                                <input type="text" placeholder="Insert your First Name" class="form-control"
+                                       id="firstname" name="firstname">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-light-grey">
+                        关 闭
+                    </button>
+                    <button type="button" class="btn btn-blue">
+                        保存信息
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block js %}
-
+    <script>
+        jQuery(document).ready(function () {
+            $('.btn-vehicle-info').on('click', function () {
+                let msgId = $(this).parent().siblings('.msg_id').text();
+                let vehicleNum = $(this).parent().siblings('.vehicle-num').text();
+                $('.modal-title').text(vehicleNum)
+            })
+        })
+    </script>
 {% endblock %}

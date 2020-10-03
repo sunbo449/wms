@@ -5,7 +5,7 @@
     # 3.同时车辆维修状态也要改成正常维修的状态
 """
 from business import models
-from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 class ServiceStatusEdit:
     """封装操作车辆维修状态"""
@@ -43,7 +43,7 @@ class ServiceStatusEdit:
                 veh_message.save()
                 self.vehicle_road_test(service_wip)
                 self.vehicle_fqc(service_wip)
-        except Exception as e:
+        except ObjectDoesNotExist:
             print('错误')
 
     def vehicle_road_test(self, wip):
@@ -85,4 +85,3 @@ class ServiceStatusEdit:
                     veh_message = models.ServiceVehicle.objects.get(wip=s_wip)
                     veh_message._service_status = self.veh_status
                     veh_message.save()
-

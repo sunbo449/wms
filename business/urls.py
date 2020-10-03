@@ -10,7 +10,9 @@ urlpatterns = [
     path("vehicle_status_edit", process_control.vehicle_status_edit, name="vehicle_status_edit"),  # 车辆状态操作
     path("vehicle_road_status_edit", process_control.vehicle_road_status_edit, name="vehicle_road_status_edit"),  # 路试
     path("vehicle_care_of", process_control.vehicle_care_of, name="vehicle_care_of"),   # 车辆转接操作
+    path("add_dispatch_team", process_control.add_dispatch_team, name="add_dispatch_team"),   # 增项派工
     path('unfinished', process_control.unfinished, name='unfinished'),   # 未完成在场车辆
+    path("team_vehicle_info_view", process_control.team_vehicle_info_view, name="team_vehicle_info_view"),  # 班组车辆信息
     path('data_report', dp.data_report, name="data_report"),  # 数据报表
     path("", process_control.index, name='index'),   # 首页
 ]

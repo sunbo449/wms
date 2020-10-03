@@ -1,9 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import JsonResponse
-from utils.login_auth import permission
+from utils.login_auth import permission, admin_permission
 from utils.info_verification import vehicle_info_validation
 from utils import vehicle_status_utils
 from business import models
+
+
+# --------------------------------------------
+#   该视图文件功能：
+#   1-车辆信息录入页面操作 ： 车辆信息录入功能
+#   2-动态看板页面操作 : 车辆状态操作、各种派工操作
+# --------------------------------------------
 
 
 @permission
@@ -11,17 +18,13 @@ def index(request):
     """首页显示"""
     return render(request, 'index.html')
 
+# ----- Start 看板页面信息处理 ----------
+
 
 @permission
 def spectaculars(request):
     """看板页面信息显示"""
     return render(request, 'spectaculars.html')
-
-
-@permission
-def unfinished(request):
-    """在场车辆页面显示"""
-    return render(request, 'unfinished.html')
 
 
 def vehicle_info(request):
@@ -73,7 +76,7 @@ def vehicle_road_status_edit(request):
             veh_obj.quick_service_status = "正常维修"
             veh_obj.save()
 
-    except Exception as e:
+    except Exception:
         return JsonResponse({'status': False, 'data': '试车结束问题'})
 
     return JsonResponse({'status': True})
@@ -86,6 +89,7 @@ def vehicle_care_of(request):
     vehicle_num = request.GET.get("care_of_team").replace(" ", "")[4:]  # 转接车牌号
 
     if "快修" in care_of_team:  # 如果转接的班组信息中包含快修，那么肯定是快修班组，否则不处理
+        # 快修完工转机电
         quick_service_vehicle_wip = models.QuickServiceVehicle.objects.filter(
             quick_service_team=care_of_team, vehicle_num=vehicle_num).exclude(
             quick_service_status='完工交车').first().wip
@@ -105,6 +109,7 @@ def vehicle_care_of(request):
                                                  vehicle_num=vehicle_num)
 
     elif "机电" in care_of_team:
+        # 机电完工转快修
         service_vehicle_wip = models.ServiceVehicle.objects.filter(
             service_team=care_of_team, vehicle_num=vehicle_num).exclude(
             service_status='完工交车').first().wip
@@ -115,8 +120,80 @@ def vehicle_care_of(request):
             service_vehicle = models.ServiceVehicle.objects.get(wip=service_vehicle_wip)
             service_vehicle.service_status = "完工交车"
             service_vehicle.save()
+            oil_service = models.VehicleInfo.objects.get(wip=service_vehicle_wip).oil_service
             models.QuickServiceVehicle.objects.create(quick_service_team=pass_on_to_team, wip=service_vehicle_wip,
-                                                      vehicle_num=vehicle_num)
+                                                      vehicle_num=vehicle_num, oil_service=oil_service)
     else:
         return JsonResponse({'status': False, "errors": '只有机电快修工序，才能互转车辆！其他工序不可！'})
     return JsonResponse({'status': True})
+
+
+def add_dispatch_team(request):
+    """增加项目派工操作"""
+    dispatch_team = request.GET.get("dispatch_team").replace(" ", "").strip()  # 派工班组信息
+    service_team = str(request.GET.get('veh_num')).replace(" ", "")[0:4]  # 提交班组名
+    veh_num = str(request.GET.get('veh_num')).replace(" ", "")[4:]  # 车牌号
+    oil_service = str(request.GET.get("oil_service")).replace(" ", "").strip()  # 获取机油保养信息
+    # 1.根据信息，查询对应工序是否已经存在该信息，如果存在，则不允许派工（快修和机修）
+    # 2.如果不存在，那么在对应的表中创建该车辆信息
+    # 快修专机电，先在快修表获取车辆wip，然后去机电表查询是否存在
+
+    if "机电" in dispatch_team and '机电' not in service_team:
+        # 快修增项转机电
+        quick_service_vehicle_wip = models.QuickServiceVehicle.objects.filter(
+            quick_service_team=service_team, vehicle_num=veh_num).exclude(
+            quick_service_status='完工交车').first().wip
+        service_vehicle_info = models.ServiceVehicle.objects.filter(wip=quick_service_vehicle_wip)
+        if service_vehicle_info.exists():
+            return JsonResponse({'status': False, "errors": '该车辆信息，在被转工序存在，故不能转车，可修改车辆信息'})
+        else:
+            models.ServiceVehicle.objects.create(service_team=dispatch_team, wip=quick_service_vehicle_wip,
+                                                 vehicle_num=veh_num)
+
+    elif "快修" in dispatch_team and '快修' not in service_team:
+        # 机电增项转快修
+        service_vehicle_wip = models.ServiceVehicle.objects.filter(service_team=service_team,
+                                                                   vehicle_num=veh_num).exclude(
+            service_status='完工交车').first().wip
+        quick_service_vehicle_info = models.QuickServiceVehicle.objects.filter(wip=service_vehicle_wip)
+        if quick_service_vehicle_info.exists():
+            return JsonResponse({'status': False, "errors": '该车辆信息，在被转工序存在，故不能转车，可修改车辆信息'})
+        else:
+            models.QuickServiceVehicle.objects.create(quick_service_team=dispatch_team, wip=service_vehicle_wip,
+                                                      vehicle_num=veh_num, oil_service=oil_service)
+    else:
+        return JsonResponse({'status': False, "errors": '该车辆信息，在被转工序存在，故不能转车，可修改车辆信息'})
+    return JsonResponse({'status': True})
+
+
+def team_vehicle_info_view(request):
+    """班组车辆信息查看功能"""
+    team = request.GET.get('team').replace(" ", "").strip()
+    data = {}
+    if '快修' in team:
+        team_vehicle_info = models.QuickServiceVehicle.objects.exclude(quick_service_status='完工交车').filter(
+            quick_service_team=team)
+        for veh_obj in team_vehicle_info:
+            data[veh_obj.vehicle_num] = veh_obj.quick_service_status
+    elif '机电' in team:
+        team_vehicle_info = models.ServiceVehicle.objects.exclude(service_status='完工交车').filter(service_team=team)
+        for veh_obj in team_vehicle_info:
+            data[veh_obj.vehicle_num] = veh_obj.service_status
+    else:
+        data['该组别'] = "无车辆信息可以查看！"
+    return JsonResponse({'status': True, 'data': data})
+
+# ------  End 看板页面信息处理  ------------
+
+# ------- Start 在场车辆信息处理 --------
+
+
+@admin_permission
+def unfinished(request):
+    """在场车辆页面显示"""
+    return render(request, 'unfinished.html')
+
+
+def vehicle_info_edit(request):
+    """车辆信息修改"""
+    pass

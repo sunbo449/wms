@@ -22,7 +22,12 @@
         .service-team-title {
             margin-bottom: 3px;
         }
-        .errors-msg{
+
+        .dispatch-team {
+            margin-bottom: 3px;
+        }
+
+        .errors-msg {
             position: absolute;
             color: red;
         }
@@ -101,6 +106,37 @@
                 <br>
                 <div class="btn-group btn-group-justified">
                     <div class="btn-group col-md-6">
+                        <button type="button" class="btn btn-dark-purple dropdown-toggle btn-block btn-lg"
+                                data-toggle="dropdown">
+                            增 项 派 工 <span class="caret"></span>
+                        </button>
+                        <br><br>
+                        <ul class="dropdown-menu col-md-10">
+                            {% service_team_all as service_list %}
+                            {% for team_title in service_list %}
+                                <li data-dismiss="modal">
+                                    <button class="btn btn-dark-grey btn-sm dispatch-team"
+                                            data-dismiss="modal">
+                                        {{ team_title }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="btn-group col-md-6">
+                        <label class="radio-inline">
+                            <input type="radio" value="是" name="optionsRadios" class="grey oil-service">
+                            有保养
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="否" name="optionsRadios" class="grey oil-service" checked>
+                            无保养
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group col-md-6">
                         <button class="btn btn-yellow btn-lg btn-block service-status-operate" data-dismiss="modal">
                             <i class="fa fa-pause"></i>暂停等件
                         </button>
@@ -132,24 +168,51 @@
                 <br>
             {% endif %}
             {% if request.team == "管理员组" or request.team == "司机组" %}
-                   <button class="btn btn-blue btn-lg btn-block btn-road-test" data-dismiss="modal">
+                <button class="btn btn-blue btn-lg btn-block btn-road-test" data-dismiss="modal">
                     <i class="fa fa-mail-forward"></i>结束路试
                 </button>
                 <br>
             {% endif %}
             {% if request.team != "司机组" %}
-            <button class="btn btn-green btn-lg btn-block service-status-operate" data-dismiss="modal">
-                <i class="fa fa-check-square"></i>车辆终检
-            </button>
-            <br>
-            <button class="btn btn-dark-red btn-lg btn-block service-status-operate" data-dismiss="modal">
-                <i class="fa fa-thumbs-up"></i>完工交车
-            </button>
-            <br>
+                <button class="btn btn-green btn-lg btn-block service-status-operate" data-dismiss="modal">
+                    <i class="fa fa-check-square"></i>车辆终检
+                </button>
+                <br>
+                <button class="btn btn-dark-red btn-lg btn-block service-status-operate" data-dismiss="modal">
+                    <i class="fa fa-thumbs-up"></i>完工交车
+                </button>
+                <br>
             {% endif %}
         </div>
     </div>
 
+    <div id="responsive" class="modal extended-modal fade no-display" tabindex="-1" data-width="760">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="team-vehicle-title"></h4>
+                </div>
+                <div class="modal-body vehicle-info-body">
+                    <div class="row ">
+                        <div class="col-md-6 team-vehicle-num btn-title">
+                            <h4 class='btn btn-dark-beige btn-block'>车牌号码</h4>
+                        </div>
+                        <div class="col-md-6 team-vehicle-status btn-title">
+                            <h4 class='btn btn-dark-purple btn-block'>维修状态</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-light-grey">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block js %}
     <script src="{% static 'js/ui-modals.js' %}"></script>
@@ -172,7 +235,7 @@
                     success: function (res) {
                         if (res.status === true) {
                             WebMessage();
-                        }else {
+                        } else {
                             $('.errors-msg').text("车辆打卡信息出现错误")
                         }
                     }
@@ -180,7 +243,7 @@
             })
 
             //  车辆路试数据操作
-            $('.btn-road-test').on('click', function (){
+            $('.btn-road-test').on('click', function () {
                 var road_status = $(this).text();
                 var road_veh_num = $('.status-veh-num').text();
                 $.ajax({
@@ -190,10 +253,10 @@
                         road_status: road_status,
                         road_veh_num: road_veh_num
                     },
-                    success: function(res){
-                        if (res.status === true){
+                    success: function (res) {
+                        if (res.status === true) {
                             WebMessage();
-                        }else {
+                        } else {
                             $('.errors-msg').text("车辆路试信息出现错误")
                         }
                     }
@@ -201,25 +264,51 @@
             })
         })
 
-        $('.service-team-title').on('click', function(){
-            var passOnToTeam = $(this).text();
-            var careOfTeam = $('.status-veh-num').text();
+        // 班组转车数据提交
+        $('.service-team-title').on('click', function () {
+            let passOnToTeam = $(this).text();
+            let careOfTeam = $('.status-veh-num').text();
             $.ajax({
                 url: "{% url 'business:vehicle_care_of' %}",
                 type: "GET",
                 data: {
-                    pass_on_to_team : passOnToTeam,
+                    pass_on_to_team: passOnToTeam,
                     care_of_team: careOfTeam
                 },
                 success: function (res) {
-                    if (res.status === true){
+                    if (res.status === true) {
                         WebMessage();
-                    }else {
-                       $('.errors-msg').text(res.errors)
+                    } else {
+                        $('.errors-msg').text(res.errors)
                     }
                 }
             })
         })
+
+        // 增项派工信息提交
+        $('.dispatch-team').on('click', function () {
+            let dispatchTeam = $(this).text();
+            let vehicleNum = $('.status-veh-num').text();
+            let oilService = $('.oil-service:radio:checked').val();
+            console.log(oilService)
+            $.ajax({
+                url: "{% url 'business:add_dispatch_team' %}",
+                type: "GET",
+                data: {
+                    dispatch_team: dispatchTeam,
+                    veh_num: vehicleNum,
+                    oil_service: oilService,
+                },
+                success: function (res) {
+                    if (res.status === true) {
+                        WebMessage();
+                    } else {
+                        $('.errors-msg').text(res.errors)
+                    }
+                }
+            })
+        })
+
 
         // WebSocket 处理函数
         function WebMessage() {
@@ -240,7 +329,7 @@
                 $.each(result.data, function (k, value) {
                     var div = "<div class='col-lg-12 col-md-12 col-xs-12 pricing-blue team-name'>" +
                         "<div class='row' id=" + k + ">" +
-                        "<ul class='plan plan2 featured col-lg-1 col-md-1 col-xs-12 team-title'>" +
+                        "<ul class='plan plan2 featured col-lg-1 col-md-1 col-xs-12 team-title' href = '#responsive' data-toggle='modal' >" +
                         "<li class='plan-name'><small class='team'>" + k + "</small></li></ul></div></div>"
                     $('.veh-table').append(div);
 
@@ -255,10 +344,33 @@
                         $("#" + k + num).on('click', function () {
                             $('.modal-title').text($(this).prop('id'));
                         })
+
+                    })
+                })
+
+                // 班组车辆信息查看处理
+                $('.team-title').on('click', function () {
+                    let team = $(this).text()
+                    $('.team-vehicle-title').text(team)
+                    $.ajax({
+                        url: "{% url 'business:team_vehicle_info_view' %}",
+                        type: "GET",
+                        data: {team: team},
+                        success: function (res) {
+                            if (res.status === true) {
+                                $('.btn-title').children('p').remove();
+                                $.each(res.data, function (vehNum, vehStatus) {
+                                    let veh_num = "<p class='btn btn-dark-blue btn-block'>" + vehNum + "</p>";
+                                    $('.team-vehicle-num').append(veh_num)
+
+                                    let veh_status = "<p class='btn btn-dark-azure btn-block'>" + vehStatus + "</p>";
+                                    $('.team-vehicle-status').append(veh_status)
+                                })
+                            }
+                        }
                     })
                 })
             }
         }
-
     </script>
 {% endblock %}

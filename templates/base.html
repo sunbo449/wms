@@ -111,6 +111,7 @@
                             <i class="fa fa-cogs"></i> 动 态 看 板 <i class="icon-arrow"></i>
                         </a>
                     </li>
+                    {% if request.team == '管理员组' %}
                     <li class={% block non %}{% endblock %}>
                         <a class="dropdown-toggle" href="{% url 'business:unfinished' %}">
                             <i class="fa fa-hdd-o"></i> 在 场 车 辆 <i class="icon-arrow"></i>
@@ -121,7 +122,6 @@
                             <i class="fa fa-bar-chart-o"></i> 车 间 报 表 <i class="icon-arrow"></i>
                         </a>
                     </li>
-                    {% if request.team == '管理员组' %}
                     <li class={% block admin %}{% endblock %}>
                         <a class="dropdown-toggle" href="{% url 'account:account' %}">
                             <i class="fa fa-user"></i> 用 户 管 理 <i class="icon-arrow"></i>
