@@ -5,6 +5,17 @@
 {% block css %}
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-modal/css/bootstrap-modal.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2/select2.css' %}">
+    <style>
+        .explain {
+            color: darkred;
+        }
+
+        .errors-msg {
+            color: red;
+            position: absolute;
+        }
+    </style>
 {% endblock %}
 {% block non %}"active"{% endblock %}
 {% block heading %}在场车辆信息{% endblock %}
@@ -49,6 +60,7 @@
                             <td class="center">6</td>
                             <td class="center">5</td>
                             <td class="center">6</td>
+                            <td class="center">5</td>
                             <td class="center">5</td>
                         </tr>
                         </tbody>
@@ -105,49 +117,90 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover" id="sample-table-1">
+                    {#                    <table id="example" class="display" style="width:100%">#}
+                    {#                        <thead>#}
+                    {#                        <tr class="info">#}
+                    {#                            <th class="center">车牌号码</th>#}
+                    {#                            <th class="center">工单号</th>#}
+                    {#                            <th class="center">服务顾问</th>#}
+                    {#                            <th class="center">快修班组</th>#}
+                    {#                            <th class="center">机电班组</th>#}
+                    {#                            <th class="hidden-xs center">维修内容</th>#}
+                    {#                            <th class="hidden-xs center">当前状态</th>#}
+                    {#                            <th class="hidden-xs center">预计交付日期</th>#}
+                    {#                            <th class="hidden-xs center">预计交付时间</th>#}
+                    {#                            <th class="hidden-xs center">实际交车日期</th>#}
+                    {#                            <th class="hidden-xs center">实际交车时间</th>#}
+                    {#                            {% if request.team == "管理员组" %}#}
+                    {#                                <th class="hidden-xs center">修改</th>#}
+                    {#                            {% endif %}#}
+                    {#                        </tr>#}
+                    {#                        </thead>#}
+                    {#                        <tbody>#}
+                    {#                        {% unfinished_messages as msg_list %}#}
+                    {#                        {% for msg in msg_list %}#}
+                    {#                            <tr class="success" data-toggle="modal" href="#responsive">#}
+                    {#                                <td class="vehicle-num center">{{ msg.vehicle_num }}</td>#}
+                    {#                                <td class="center">{{ msg.wip }}</td>#}
+                    {#                                <td class="center">{{ msg.sa }}</td>#}
+                    {#                                <td class="center">{{ msg.quick_service_team }}</td>#}
+                    {#                                <td class="center">{{ msg.service_team }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.service_project }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.service_status }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.estimate_finish_date }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.estimate_finish_time }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.actual_finish_date }}</td>#}
+                    {#                                <td class="hidden-xs center">{{ msg.actual_finish_time }}</td>#}
+                    {#                                <td class="visible-md visible-lg hidden-sm hidden-xs center">#}
+                    {#                                    <a href="#responsive" class="btn btn-xs btn-blue tooltips btn-vehicle-info"#}
+                    {#                                       data-placement="top" id="{{ msg.id }}"#}
+                    {#                                       data-original-title="修改" data-toggle="modal"><i class="fa fa-edit"></i></a>#}
+                    {#                                </td>#}
+                    {#                            </tr>#}
+                    {#                        {% endfor %}#}
+                    {#                        </tbody>#}
+                    {#                    </table>#}
+                    <table class="table table-striped table-bordered table-hover table-full-width" id="sample_1">
                         <thead>
-                        <tr>
+                        <tr class="info">
                             <th style="display: none">ID</th>
-                            <th>车牌号码</th>
-                            <th>工单号</th>
-                            <th>服务顾问</th>
-                            <th>快修班组</th>
-                            <th>机电班组</th>
-                            <th class="hidden-xs">维修内容</th>
-                            <th class="hidden-xs">当前状态</th>
-                            <th class="hidden-xs">预计交付日期</th>
-                            <th class="hidden-xs">预计交付时间</th>
-                            <th class="hidden-xs">实际交车日期</th>
-                            <th class="hidden-xs">实际交车时间</th>
-                            {% if request.team == "管理员组" %}
-                                <th class="hidden-xs">修改</th>
-                            {% endif %}
+                            <th class="center">车牌号码</th>
+                            <th class="center">工单号</th>
+                            <th class="center">服务顾问</th>
+                            <th class="center">快修班组</th>
+                            <th class="center">机电班组</th>
+                            <th class="hidden-xs center">维修内容</th>
+                            <th class="hidden-xs center">当前状态</th>
+                            <th class="hidden-xs center">预计交付日期</th>
+                            <th class="hidden-xs center">预计交付时间</th>
+                            <th class="hidden-xs center">实际交车日期</th>
+                            <th class="hidden-xs center">实际交车时间</th>
+                            {#                            {% if request.team == "管理员组" %}#}
+                            {#                                <th class="hidden-xs center">修改</th>#}
+                            {#                            {% endif %}#}
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sample_body">
                         {% unfinished_messages as msg_list %}
                         {% for msg in msg_list %}
-                            <tr>
-                                <td style="display: none" class="msg_id">{{ msg.id }}</td>
-                                <td class="vehicle-num">{{ msg.vehicle_num }}</td>
-                                <td>{{ msg.wip }}</td>
-                                <td>{{ msg.sa }}</td>
-                                <td>{{ msg.quick_service_team }}</td>
-                                <td>{{ msg.service_team }}</td>
-                                <td class="hidden-xs">{{ msg.service_project }}</td>
-                                <td class="hidden-xs">{{ msg.service_status }}</td>
-                                <td class="hidden-xs">{{ msg.estimate_finish_date }}</td>
-                                <td class="hidden-xs">{{ msg.estimate_finish_time }}</td>
-                                <td class="hidden-xs">{{ msg.actual_finish_date }}</td>
-                                <td class="hidden-xs">{{ msg.actual_finish_time }}</td>
-                                {% if request.team == "管理员组" %}
-                                    <td class="visible-md visible-lg hidden-sm hidden-xs">
-                                        <a href="#responsive" class="btn btn-xs btn-blue tooltips btn-vehicle-info"
-                                           data-placement="top"
-                                           data-original-title="修改" data-toggle="modal"><i class="fa fa-edit"></i></a>
-                                    </td>
-                                {% endif %}
+                            <tr class="success" id="{{ msg.id }}" href="#responsive" data-toggle="modal">
+                                <td style="display: none">{{ msg.id }}</td>
+                                <td class="veh_num center">{{ msg.vehicle_num }}</td>
+                                <td class="veh_wip center">{{ msg.wip }}</td>
+                                <td class="veh_sa center">{{ msg.sa }}</td>
+                                <td class="veh_quick_service_team center">{{ msg.quick_service_team }}</td>
+                                <td class="veh_service_team center">{{ msg.service_team }}</td>
+                                <td class="veh_service_project hidden-xs center">{{ msg.service_project }}</td>
+                                <td class="veh_service_status hidden-xs center">{{ msg.service_status }}</td>
+                                <td class="hidden-xs center">{{ msg.estimate_finish_date|date:"Y-m-d" }}</td>
+                                <td class="hidden-xs center">{{ msg.estimate_finish_time }}</td>
+                                <td class="veh_actual_finish_date hidden-xs center">{{ msg.actual_finish_date|date:"Y-m-d" }}</td>
+                                <td class="veh_actual_finish_time hidden-xs center">{{ msg.actual_finish_time }}</td>
+                                {#                                <td class="visible-md visible-lg hidden-sm hidden-xs center">#}
+                                {#                                    <a href="#responsive" class="btn btn-xs btn-blue tooltips btn-vehicle-info"#}
+                                {#                                       data-placement="top" id="{{ msg.id }}"#}
+                                {#                                       data-original-title="修改" data-toggle="modal"><i class="fa fa-edit"></i></a>#}
+                                {#                                </td>#}
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -166,49 +219,127 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title"></h4>
+                    <h4 class="modal-title explain"></h4>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">
-                                    车 牌 号 码 <span class="symbol required"></span>
-                                </label>
-                                <input type="text" placeholder="Insert your First Name" class="form-control"
-                                       id="vehicle-number" name="firstname">
+                <form id="vehicle_message_edit">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="edit-veh-number">
+                                        车 牌 号 码 <span class="symbol required"></span>
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veh-number" name="veh_number">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">
-                                    工 单 号 码 <span class="symbol required"></span>
-                                </label>
-                                <input type="text" placeholder="Insert your First Name" class="form-control"
-                                       id="firstname" name="firstname">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="edit-wip">
+                                        工 单 号 码 <span class="symbol required"></span>
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-wip" name="edit_wip">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-sa">
+                                        服 务 顾 问 <span class="symbol required"></span>
+                                    </label>
+                                    <input type="text" class="form-control" id="veh-sa" name="veh_sa">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-service-status">
+                                        维 修 状 态 <span class="symbol required"></span>
+                                    </label>
+                                    <input type="text" class="form-control" id="veh-service-status"
+                                           name="veh_service_status">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-quick-team">
+                                        快 修 班 组 <span class="symbol required"></span>
+                                    </label>
+                                    <select class="form-control" name="veh_quick_service_team" id="veh-quick-team">
+                                        {% quick_service_team as team_list %}
+                                        {% for team in team_list %}
+                                            <option value={{ team.caption }}>{{ team.caption }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-service-team">
+                                        机 电 班 组<span class="symbol required"></span>
+                                    </label>
+                                    <select class="form-control" name="veh_service_team" id="veh-service-team">
+                                        {% service_team as service_team_list %}
+                                        {% for team in service_team_list %}
+                                            <option value={{ team.caption }}>{{ team.caption }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-actual-finish-date">
+                                        实际交车日期<span class="symbol required"></span>
+                                    </label>
+                                    <input type="date" class="form-control" id="veh-actual-finish-date"
+                                           name="veh_actual_finish_date">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="veh-actual-finish-time">
+                                        实际交车时间<span class="symbol required"></span>
+                                    </label>
+                                    <input type="time" class="form-control" id="veh-actual-finish-time"
+                                           name="veh_actual_finish_time">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <p class="explain"> 说明1：如需修改工单号，需将工单号信息全部删除后，填写实际工单号即可；</p>
+                                <p class="explain"> 说明2：维修状态建议：只需将 暂停等件 更改为 正常维修，其他状态无需更改！可能会出现意外！</p>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-light-grey">
-                        关 闭
-                    </button>
-                    <button type="button" class="btn btn-blue">
-                        保存信息
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <p class="errors-msg">错误信息</p>
+                        <button type="button" data-dismiss="modal" class="btn btn-light-grey">
+                            关 闭
+                        </button>
+                        <button type="button" class="btn btn-blue btn-submit">
+                            保存信息
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block js %}
+    <script src="{% static 'plugins/select2/select2.min.js' %}"></script>
+    <script src="{% static 'js/table-data.js' %}"></script>
     <script>
         jQuery(document).ready(function () {
-            $('.btn-vehicle-info').on('click', function () {
-                let msgId = $(this).parent().siblings('.msg_id').text();
-                let vehicleNum = $(this).parent().siblings('.vehicle-num').text();
-                $('.modal-title').text(vehicleNum)
+            Main.init();
+            {#SVExamples.init();#}
+            TableData.init();
+
+            $('.btn-submit').on('click', function () {
+                $.ajax({
+                    url: "{% url 'business:vehicle_info_edit' %}",
+                    type: "POST",
+                    data: $('#vehicle_message_edit').serialize(),
+                    success: function (res) {
+                        console.log(123)
+                    }
+                })
             })
         })
     </script>

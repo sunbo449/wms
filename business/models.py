@@ -33,7 +33,7 @@ class VehicleInfo(models.Model):
     oil_service = models.CharField(max_length=10, verbose_name="机油保养")
     over_registration = models.CharField(max_length=10, verbose_name="重复进场工单")
     quick_service_team = models.ForeignKey(Team, related_name="quick_service", db_column="快修班组",
-                                           on_delete=models.CASCADE, verbose_name="快修班组", null=True, blank=True)
+                                           on_delete=models.CASCADE, verbose_name="快修班组",  null=True, blank=True)
     quick_service_status = models.CharField(max_length=32, default="正在维修", verbose_name="快修维修状态")
     service_team = models.ForeignKey(Team, related_name="service_team", db_column="机电班组", on_delete=models.CASCADE,
                                      verbose_name="机电班组", null=True, blank=True)

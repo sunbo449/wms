@@ -7,6 +7,7 @@
 from business import models
 from django.core.exceptions import ObjectDoesNotExist
 
+
 class ServiceStatusEdit:
     """封装操作车辆维修状态"""
 
@@ -65,15 +66,13 @@ class ServiceStatusEdit:
         if fqc_vehicle.exists():
             if self.veh_status == "完工交车":
                 fqc_wip = fqc_vehicle.first().wip
-                fqc_vehicle_status = models.FQC.objects.get(wip=fqc_wip)
+                fqc_team = fqc_vehicle.first().service_team
+                fqc_vehicle_status = models.FQC.objects.get(wip=fqc_wip, service_team=fqc_team)
                 fqc_vehicle_status.service_status = self.veh_status
                 fqc_vehicle_status.save()
-
                 quick_service_fqc_vehicle = models.QuickServiceVehicle.objects.filter(wip=fqc_wip,
                                                                                       quick_service_status='车辆终检')
-                print(quick_service_fqc_vehicle)
                 if quick_service_fqc_vehicle.exists():
-                    print(quick_service_fqc_vehicle.exists())
                     q_wip = quick_service_fqc_vehicle.first().wip
                     veh_message = models.QuickServiceVehicle.objects.get(wip=q_wip)
                     veh_message.quick_service_status = self.veh_status

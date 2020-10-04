@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from utils.login_auth import permission, admin_permission
-from utils.info_verification import vehicle_info_validation
+from utils.info_verification import vehicle_info_validation, vehicle_info_edit_validation
 from utils import vehicle_status_utils
 from business import models
 
@@ -196,4 +196,5 @@ def unfinished(request):
 
 def vehicle_info_edit(request):
     """车辆信息修改"""
-    pass
+    vehicle_info_edit_validation(request)
+    return JsonResponse({'status': True, 'data': 'OK'})

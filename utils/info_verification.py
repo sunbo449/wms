@@ -6,7 +6,7 @@ from business.models import VehicleInfo
 
 
 def vehicle_info_validation(request):
-    """车辆信息验证"""
+    """车辆录入信息验证"""
     timer = datetime.now().strftime("%Y%m%d")
     vehicle_num = request.POST.get("vehicle_num").replace(" ", "").upper()
     wip = timer + str(request.POST.get("wip", "").replace(" ", ""))
@@ -64,3 +64,8 @@ def vehicle_info_validation(request):
 
     success = True
     return success
+
+
+def vehicle_info_edit_validation(request):
+    """车辆信息修改验证与操作"""
+    veh_num = request.POST.get('veh_number')
